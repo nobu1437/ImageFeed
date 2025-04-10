@@ -28,13 +28,20 @@ final class ProfileViewController: UIViewController {
     nickLabelInit()
     descLabelInit()
     buttonInit()
+    addSubviews()
   }
   
-  func imageViewInit(){
+  private func addSubviews() {
+      [nameLabel, nickLabel, descLabel, imageView].forEach {
+        $0!.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview($0!)
+      }
+  }
+  
+  private func imageViewInit(){
     let profileImage = UIImage(named: "avatar")
     let imageView = UIImageView(image: profileImage)
     imageView.tintColor = .gray
-    imageView.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(imageView)
     imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
     imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
@@ -42,40 +49,37 @@ final class ProfileViewController: UIViewController {
     imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
     self.imageView = imageView
   }
-  func nameLabelInit(){
+  private func nameLabelInit(){
     let nameLabel = UILabel()
     nameLabel.text = "Екатерина Новикова"
     nameLabel.font = .systemFont(ofSize: 23, weight: .bold)
     nameLabel.textColor = .white
-    nameLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(nameLabel)
     nameLabel.leadingAnchor.constraint(equalTo: imageView!.leadingAnchor).isActive = true
     nameLabel.topAnchor.constraint(equalTo: imageView!.bottomAnchor, constant: 8).isActive = true
     self.nameLabel = nameLabel
   }
-  func nickLabelInit(){
+  private func nickLabelInit(){
     let nickLabel = UILabel()
     nickLabel.text = "@ekaterina_nov"
     nickLabel.font = .systemFont(ofSize: 13, weight: .regular)
     nickLabel.textColor = .gray
-    nickLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(nickLabel)
     nickLabel.leadingAnchor.constraint(equalTo: imageView!.leadingAnchor).isActive = true
     nickLabel.topAnchor.constraint(equalTo: nameLabel!.bottomAnchor, constant: 8).isActive = true
     self.nickLabel = nickLabel
   }
-  func descLabelInit(){
+  private func descLabelInit(){
     let descLabel = UILabel()
     descLabel.text = "Hello, world!"
     descLabel.font = .systemFont(ofSize: 13, weight: .regular)
     descLabel.textColor = .white
-    descLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(descLabel)
     descLabel.leadingAnchor.constraint(equalTo: imageView!.leadingAnchor).isActive = true
     descLabel.topAnchor.constraint(equalTo: nickLabel!.bottomAnchor, constant: 8).isActive = true
     self.descLabel = descLabel
   }
-  func buttonInit(){
+  private func buttonInit(){
     let button = UIButton.systemButton(
       with: UIImage(named: "logoutImage")!,
       target: self,
