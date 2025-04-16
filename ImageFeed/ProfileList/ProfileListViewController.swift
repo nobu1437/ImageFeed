@@ -32,10 +32,10 @@ final class ProfileViewController: UIViewController {
   }
   
   private func addSubviews() {
-      [nameLabel, nickLabel, descLabel, imageView].forEach {
-        $0!.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview($0!)
-      }
+    [nameLabel, nickLabel, descLabel, imageView].forEach {
+      $0!.translatesAutoresizingMaskIntoConstraints = false
+      view.addSubview($0!)
+    }
   }
   
   private func imageViewInit(){
