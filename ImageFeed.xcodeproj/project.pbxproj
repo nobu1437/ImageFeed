@@ -35,7 +35,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E52A33212D4504B7002E1597 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
+		E5DF16712DB1937C00C42F45 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -45,14 +45,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		E52A32FB2D4504B5002E1597 /* ImageFeed */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				E52A33212D4504B7002E1597 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
-			);
-			path = ImageFeed;
-			sourceTree = "<group>";
-		};
 		E52A33122D4504B7002E1597 /* ImageFeedTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ImageFeedTests;
@@ -61,6 +53,14 @@
 		E52A331C2D4504B7002E1597 /* ImageFeedUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ImageFeedUITests;
+			sourceTree = "<group>";
+		};
+		E5DF165A2DB1937C00C42F45 /* ImageFeed */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E5DF16712DB1937C00C42F45 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
+			);
+			path = ImageFeed;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -94,11 +94,11 @@
 		E52A32F02D4504B5002E1597 = {
 			isa = PBXGroup;
 			children = (
-				E52A32FB2D4504B5002E1597 /* ImageFeed */,
 				E52A33122D4504B7002E1597 /* ImageFeedTests */,
 				E52A331C2D4504B7002E1597 /* ImageFeedUITests */,
 				E5DF15822DB1868900C42F45 /* Frameworks */,
 				E52A32FA2D4504B5002E1597 /* Products */,
+				E5DF165A2DB1937C00C42F45 /* ImageFeed */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,7 +136,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				E52A32FB2D4504B5002E1597 /* ImageFeed */,
+				E5DF165A2DB1937C00C42F45 /* ImageFeed */,
 			);
 			name = ImageFeed;
 			packageProductDependencies = (
