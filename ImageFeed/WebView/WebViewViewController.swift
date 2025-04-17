@@ -19,6 +19,7 @@ final class WebViewViewController: UIViewController{
     super.viewDidLoad()
     loadAuthView()
     webView.navigationDelegate = self
+    webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -79,11 +80,11 @@ extension WebViewViewController: WKNavigationDelegate{
     decidePolicyFor navigationAction: WKNavigationAction,
     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
   ) {
-    if let code = code(from: navigationAction) { //1
-      //TODO: process code                     //2
-      decisionHandler(.cancel) //3
+    if let code = code(from: navigationAction) { 
+      delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+      decisionHandler(.cancel)
     } else {
-      decisionHandler(.allow) //4
+      decisionHandler(.allow)
     }
   }
   private func code(from navigationAction: WKNavigationAction) -> String? {
