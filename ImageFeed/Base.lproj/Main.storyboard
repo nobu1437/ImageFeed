@@ -334,7 +334,7 @@
         <scene sceneID="siV-m7-yWS">
             <objects>
                 <viewController id="tnA-kL-wgJ" customClass="SplashViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ayf-AF-5Ag" customClass="Splas">
+                    <view key="view" contentMode="scaleToFill" id="Ayf-AF-5Ag">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
