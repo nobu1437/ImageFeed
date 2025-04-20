@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Profile{
+struct Profile{
   var username: String
   var name: String
   var bio: String?
