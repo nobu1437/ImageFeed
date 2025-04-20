@@ -19,8 +19,8 @@ final class ProfileViewController: UIViewController {
         object: nil,                                        // 4
         queue: .main                                        // 5
       ) { [weak self] _ in
-        guard let self = self else { return }
-        guard let imageLink = ProfileImageService.shared.avatarURL else { return }
+        guard let self = self,
+        let imageLink = ProfileImageService.shared.avatarURL else { return }
         print(imageLink)
         self.imageLink = imageLink
         self.updateAvatar(imageLink:imageLink)                                 // 6
@@ -56,8 +56,7 @@ final class ProfileViewController: UIViewController {
     guard let imageView = imageView else {
       print ("imageView is not initialized")
       return }
-    let processor = RoundCornerImageProcessor(cornerRadius: 100)
-    imageView.kf.setImage(with: URL(string: imageLink),options:[.processor(processor)] )
+    imageView.kf.setImage(with: URL(string: imageLink))
     print("done")
   }
   
@@ -72,11 +71,13 @@ final class ProfileViewController: UIViewController {
     let profileImage = UIImage(named: "avatar")
     let imageView = UIImageView(image: profileImage)
     imageView.tintColor = .gray
+    imageView.layer.cornerRadius = 35
     view.addSubview(imageView)
     imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
     imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
     imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
     imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+    imageView.clipsToBounds = true
     self.imageView = imageView
   }
   private func nameLabelInit(name:String){
