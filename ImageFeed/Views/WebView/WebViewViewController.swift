@@ -45,7 +45,7 @@ final class WebViewViewController: UIViewController{
     webView.load(request)
   }
   
-  @IBAction func didTapBackButton(_ sender: Any) {
+  @IBAction private func didTapBackButton(_ sender: Any) {
     dismiss(animated: true)
   }
   
