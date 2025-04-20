@@ -1,30 +1,28 @@
 import UIKit
 import WebKit
+import Kingfisher
 
 final class WebViewViewController: UIViewController{
   
+  @IBOutlet var backButton: UIButton!
   @IBOutlet var webView: WKWebView!
   @IBOutlet var progressBar: UIProgressView!
+  private var estimatedProgressObservation: NSKeyValueObservation?
   
   weak var delegate: WebViewViewControllerDelegate?
-  override func viewWillAppear(_ animated: Bool) {
-    webView.addObserver(
-      self,
-      forKeyPath: #keyPath(WKWebView.estimatedProgress),
-      options: .new,
-      context: nil)
-  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    backButton.titleLabel?.text = ""
     loadAuthView()
     webView.navigationDelegate = self
-    webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-  }
-  
-  override func viewDidDisappear(_ animated: Bool) {
-    webView.removeObserver(self, forKeyPath:
-                            #keyPath(WKWebView.estimatedProgress), context: nil)
+    estimatedProgressObservation = webView.observe(
+      \.estimatedProgress,
+       options: [],
+       changeHandler: { [weak self] _, _ in
+         guard let self = self else { return }
+         self.updateProgress()
+       })
   }
   
   private func loadAuthView() {
@@ -47,25 +45,8 @@ final class WebViewViewController: UIViewController{
     webView.load(request)
   }
   
-  
-  
-  override func addObserver(
-    _ observer: NSObject,
-    forKeyPath keyPath: String,
-    options: NSKeyValueObservingOptions = [],
-    context: UnsafeMutableRawPointer?) {}
-  
-  override func observeValue(
-    forKeyPath keyPath: String?,
-    of object: Any?,
-    change: [NSKeyValueChangeKey : Any]?,
-    context: UnsafeMutableRawPointer?
-  ) {
-    if keyPath == #keyPath(WKWebView.estimatedProgress) {
-      updateProgress()
-    } else {
-      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-    }
+  @IBAction private func didTapBackButton(_ sender: Any) {
+    dismiss(animated: true)
   }
   
   private func updateProgress() {

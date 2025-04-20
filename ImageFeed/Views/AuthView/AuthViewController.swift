@@ -1,5 +1,5 @@
 import UIKit
-
+import ProgressHUD
 
 final class AuthViewController: UIViewController {
   private let showWebViewSegueIdentifier = "ShowWebView"
