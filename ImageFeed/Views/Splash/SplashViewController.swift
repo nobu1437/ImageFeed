@@ -6,7 +6,7 @@ final class SplashViewController: UIViewController {
   private let storage = OAuth2TokenStorage.shared
   let alert = UIAlertController(title: "Что-то пошло не так", message: "Не удалось войти в систему", preferredStyle: .alert)
   let action = UIAlertAction(title: "ok", style: .default)
-
+  
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
@@ -36,17 +36,20 @@ final class SplashViewController: UIViewController {
     view.backgroundColor = UIColor(named: "YP Black")
     let image = UIImage(named: "unsplash_logo")
     let imageView = UIImageView(image: image)
-
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    self.imageView = imageView
-    view.addSubview(self.imageView!)
+    
+    view.addSubview(imageView)
     NSLayoutConstraint.activate([
-      self.imageView!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-      self.imageView!.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
+      imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+      imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
+    self.imageView = imageView
   }
   
   private func switchToTabBarController() {
-    guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+    guard let window = UIApplication.shared.windows.first else {
+      assertionFailure("Invalid Configuration")
+      return
+    }
     let tabBarController = UIStoryboard(name: "Main", bundle: .main)
       .instantiateViewController(withIdentifier: "TabBarViewController")
     window.rootViewController = tabBarController
@@ -56,10 +59,14 @@ final class SplashViewController: UIViewController {
 extension SplashViewController {
   func presentAuthController(){
     let storyboard = UIStoryboard(name: "Main", bundle: .main)
-    let viewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as! AuthViewController
-    viewController.delegate = self
-    viewController.modalPresentationStyle = .fullScreen
-    present(viewController, animated: true)
+    if let viewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController{
+      viewController.delegate = self
+      viewController.modalPresentationStyle = .fullScreen
+      present(viewController, animated: true)
+    }
+    else{
+      assertionFailure("No controllers with this identifier")
+    }
   }
 }
 
@@ -78,7 +85,7 @@ extension SplashViewController: AuthViewControllerDelegate {
       UIBlockingProgressHUD.dismiss()
       guard let self = self else { return }
       switch result {
-      case .success(let profile):
+      case .success(_):
         self.switchToTabBarController()
       case .failure(let error):
         print("Profile error: Can't get profile parameters \(error.localizedDescription)")
