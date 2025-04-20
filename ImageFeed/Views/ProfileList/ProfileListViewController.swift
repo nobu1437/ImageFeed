@@ -1,14 +1,35 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
   private var nameLabel: UILabel?
   private var nickLabel: UILabel?
   private var descLabel: UILabel?
   private var imageView: UIImageView?
+  private var profileImageServiceObserver: NSObjectProtocol?
+  private var imageLink: String?
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    uiSetup()
+    print("init")
+    view.backgroundColor = UIColor(named: "YP Black")
+    profileImageServiceObserver = NotificationCenter.default    // 2
+      .addObserver(
+        forName: ProfileImageService.didChangeNotification, // 3
+        object: nil,                                        // 4
+        queue: .main                                        // 5
+      ) { [weak self] _ in
+        guard let self = self else { return }
+        guard let imageLink = ProfileImageService.shared.avatarURL else { return }
+        print(imageLink)
+        self.imageLink = imageLink
+        self.updateAvatar(imageLink:imageLink)                                 // 6
+      }
+    guard let profile = ProfileService.shared.profile else { return }
+    self.uiSetup(profile: profile)
+    if let imageLink = ProfileImageService.shared.avatarURL {
+      updateAvatar(imageLink: imageLink)
+    }
   }
   
   @objc
@@ -22,13 +43,22 @@ final class ProfileViewController: UIViewController {
     imageView?.image = UIImage(systemName: "person.crop.circle.fill")
   }
   
-  func uiSetup(){
+  func uiSetup(profile:Profile){
     imageViewInit()
-    nameLabelInit()
-    nickLabelInit()
-    descLabelInit()
+    nameLabelInit(name:profile.name)
+    nickLabelInit(nick:profile.username)
+    descLabelInit(bio:profile.bio)
     buttonInit()
     addSubviews()
+  }
+  
+  private func updateAvatar(imageLink: String) {
+    guard let imageView = imageView else {
+      print ("imageView is not initialized")
+      return }
+    let processor = RoundCornerImageProcessor(cornerRadius: 100)
+    imageView.kf.setImage(with: URL(string: imageLink),options:[.processor(processor)] )
+    print("done")
   }
   
   private func addSubviews() {
@@ -49,9 +79,9 @@ final class ProfileViewController: UIViewController {
     imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
     self.imageView = imageView
   }
-  private func nameLabelInit(){
+  private func nameLabelInit(name:String){
     let nameLabel = UILabel()
-    nameLabel.text = "Екатерина Новикова"
+    nameLabel.text = name
     nameLabel.font = .systemFont(ofSize: 23, weight: .bold)
     nameLabel.textColor = .white
     view.addSubview(nameLabel)
@@ -59,9 +89,9 @@ final class ProfileViewController: UIViewController {
     nameLabel.topAnchor.constraint(equalTo: imageView!.bottomAnchor, constant: 8).isActive = true
     self.nameLabel = nameLabel
   }
-  private func nickLabelInit(){
+  private func nickLabelInit(nick:String){
     let nickLabel = UILabel()
-    nickLabel.text = "@ekaterina_nov"
+    nickLabel.text = nick
     nickLabel.font = .systemFont(ofSize: 13, weight: .regular)
     nickLabel.textColor = .gray
     view.addSubview(nickLabel)
@@ -69,9 +99,13 @@ final class ProfileViewController: UIViewController {
     nickLabel.topAnchor.constraint(equalTo: nameLabel!.bottomAnchor, constant: 8).isActive = true
     self.nickLabel = nickLabel
   }
-  private func descLabelInit(){
+  private func descLabelInit(bio:String?){
     let descLabel = UILabel()
-    descLabel.text = "Hello, world!"
+    if let bio = bio{
+      descLabel.text = bio
+    } else{
+      descLabel.text = "default description"
+    }
     descLabel.font = .systemFont(ofSize: 13, weight: .regular)
     descLabel.textColor = .white
     view.addSubview(descLabel)
