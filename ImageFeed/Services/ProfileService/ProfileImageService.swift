@@ -27,13 +27,13 @@ final class ProfileImageService{
     assert(Thread.isMainThread)
     task?.cancel()
     guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
-      print("Profile Image Error: wrong URL")
+      print("[ProfileImageService Error]: wrong URL")
       completion(.failure(ProfileError.invalidURL))
       return
     }
     print(url)
     var request = URLRequest(url: url)
-    request.httpMethod = "GET"
+    request.httpMethod = httpConstants.get.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
       guard let self = self else { return }
@@ -50,7 +50,7 @@ final class ProfileImageService{
             userInfo: ["URL": self.avatarURL])
         print("post")
       case .failure(let error):
-        print(error.localizedDescription)
+        print("[ProfileImageService Error]:failed to fetch profile image \(error)")
         completion(.failure(error))
       }
     }

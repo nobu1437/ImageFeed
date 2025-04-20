@@ -29,20 +29,20 @@ final class OAuth2Service {
           completion(.failure(error))
           self.task = nil
           self.lastCode = nil
-          print("Failed to fetch OAuth token")
+          print("[OAuth2ServiceError]: Failed to fetch OAuth token\(error)")
         }
       }
       self.task = task
       task.resume()
     case .failure(let error):
-      print("Error: cant create request \(error)")
+      print("[OAuth2ServiceError]: cant create request \(error)")
       completion(.failure(error))
     }
   }
   
   func makeOAuthTokenRequest(code: String) -> Result<URLRequest,UrlError> {
     guard let baseURL = URL(string: "https://unsplash.com") else {
-      print("Error: invalid base URL")
+      print("[OAuth2ServiceError]: invalid base URL")
       return .failure(.invalidBaseURL)
     }
     guard let url = URL(
@@ -54,11 +54,11 @@ final class OAuth2Service {
       + "&&grant_type=authorization_code",
       relativeTo: baseURL
     ) else{
-      print ("Error: invalid URL")
+      print ("[OAuth2ServiceError]: invalid URL")
       return .failure(.invalidURL)
     }
     var request = URLRequest(url: url)
-    request.httpMethod = "POST"
+    request.httpMethod = httpConstants.post.rawValue
     return .success(request)
   }
 }

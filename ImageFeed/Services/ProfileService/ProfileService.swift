@@ -2,9 +2,15 @@ import Foundation
 
 struct ProfileResult:Codable{
   let username:String
-  let first_name:String
-  let last_name:String
+  let firstName:String
+  let lastName:String
   let bio:String?
+  
+  enum CodingKeys:String, CodingKey{
+    case username,bio
+    case firstName = "first_name"
+    case lastName = "last_name"
+  }
 }
 
 final class ProfileService{
@@ -23,7 +29,7 @@ final class ProfileService{
       return
     }
     var request = URLRequest(url: url)
-    request.httpMethod = "GET"
+    request.httpMethod = httpConstants.get.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
         guard let self = self else { return }
@@ -32,20 +38,20 @@ final class ProfileService{
         print("profile data fetched successfully")
         let profile = Profile(
           username: "@\(profileResult.username)",
-          name: "\(profileResult.first_name) \(profileResult.last_name)",
+          name: "\(profileResult.firstName) \(profileResult.lastName)",
           bio: profileResult.bio
         )
         self.profile = profile
         ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { result in
           switch result{
           case .success(_):
-            print("successfuly decoded image URl")
+            print("successfully decoded image URl")
           case .failure(let error):
-            print(error.localizedDescription)
+            print("[ProfileService Error]: can't decode image URL \(error)")
           }}
         completion(.success(profile))
       case .failure(let error):
-        print(error.localizedDescription)
+        print("[ProfileService Error]: can't fetch profile data \(error)")
         completion(.failure(error))
       }
     }
