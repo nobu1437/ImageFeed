@@ -33,7 +33,7 @@ final class ProfileImageService{
     }
     print(url)
     var request = URLRequest(url: url)
-    request.httpMethod = httpConstants.get.rawValue
+    request.httpMethod = HttpConstants.get.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
       guard let self = self else { return }
@@ -56,5 +56,8 @@ final class ProfileImageService{
     }
     self.task = task
     task.resume()
+  }
+  func avatarURLDelete(){
+    self.avatarURL = nil
   }
 }

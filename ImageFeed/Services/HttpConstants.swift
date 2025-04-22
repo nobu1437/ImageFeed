@@ -1,6 +1,6 @@
 import Foundation
 
-enum httpConstants:String{
+enum HttpConstants:String{
   case get = "GET"
   case post = "POST"
   case delete = "DELETE"

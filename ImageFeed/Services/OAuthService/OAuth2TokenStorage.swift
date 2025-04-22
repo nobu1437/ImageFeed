@@ -14,15 +14,21 @@ public class OAuth2TokenStorage{
     }
     set{
       guard let value = newValue else {
-        assertionFailure("cant store empty token")
+        storage.removeObject(forKey: tokenKey)
+        print("cant store empty token")
         return
       }
-       let isSuccess = storage.set(value, forKey: tokenKey)
+      let isSuccess = storage.set(value, forKey: tokenKey)
       guard isSuccess else{
         print("error storing token, removing it")
         storage.removeObject(forKey: tokenKey)
         return
       }
     }
+  }
+  func tokenDelete(){
+    self.token = nil
+    storage.removeObject(forKey: tokenKey)
+    
   }
 }

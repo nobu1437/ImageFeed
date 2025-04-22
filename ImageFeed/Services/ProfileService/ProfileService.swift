@@ -29,7 +29,7 @@ final class ProfileService{
       return
     }
     var request = URLRequest(url: url)
-    request.httpMethod = httpConstants.get.rawValue
+    request.httpMethod = HttpConstants.get.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
         guard let self = self else { return }
@@ -57,5 +57,8 @@ final class ProfileService{
     }
     self.task = task
     task.resume()
+  }
+  func profileDelete(){
+    self.profile = nil
   }
 }

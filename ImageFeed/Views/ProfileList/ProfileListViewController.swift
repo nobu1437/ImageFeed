@@ -20,7 +20,7 @@ final class ProfileViewController: UIViewController {
         queue: .main                                        // 5
       ) { [weak self] _ in
         guard let self = self,
-        let imageLink = ProfileImageService.shared.avatarURL else { return }
+              let imageLink = ProfileImageService.shared.avatarURL else { return }
         print(imageLink)
         self.imageLink = imageLink
         self.updateAvatar(imageLink:imageLink)                                 // 6
@@ -34,15 +34,18 @@ final class ProfileViewController: UIViewController {
   
   @objc
   private func didTapButton() {
-    nameLabel?.removeFromSuperview()
-    nickLabel?.removeFromSuperview()
-    descLabel?.removeFromSuperview()
-    nameLabel = nil
-    nickLabel = nil
-    descLabel = nil
-    imageView?.image = UIImage(systemName: "person.crop.circle.fill")
+    addConfirmationAlert()
   }
-  
+  func addConfirmationAlert(){
+    let alert = UIAlertController(title: "Вы уверены?", message: "Придется заново заходить!", preferredStyle: .alert)
+    let actionYes = UIAlertAction(title: "Да", style: .destructive){_ in
+      ProfileLogoutService.shared.logout()
+    }
+    let actionNo = UIAlertAction(title: "Нет", style: .default)
+    alert.addAction(actionYes)
+    alert.addAction(actionNo)
+    self.present(alert, animated: true)
+  }
   func uiSetup(profile:Profile){
     imageViewInit()
     nameLabelInit(name:profile.name)
