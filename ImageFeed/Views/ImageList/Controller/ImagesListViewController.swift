@@ -1,33 +1,19 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController, ImagesListControllerProtocol {
+  var presenter: ImagesListPresenterProtocol?
   private let showSingleImageSegueIdentifier = "ShowSingleImage"
   private var photos: [Photo] = []
-  
 
   @IBOutlet private var tableView: UITableView!
   
-  private lazy var dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .long
-    formatter.timeStyle = .none
-    return formatter
-  }()
-  
   override func viewDidLoad() {
     super.viewDidLoad()
-    NotificationCenter.default.addObserver(
-      forName: ImagesListService.didChangeNotification,
-      object: nil,
-      queue: .main
-    ){ [weak self] _ in
-      DispatchQueue.main.async{
-        self?.updateTableViewAnimated()
-      }}
+    presenter?.viewDidLoad()
     
     tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-    ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
+    presenter?.loadNextPageIfNeeded(){ [weak self] result in
       guard let self = self else { return }
       switch result {
       case .success(let photos):
@@ -38,7 +24,7 @@ final class ImagesListViewController: UIViewController {
       }
     }
   }
-  func presentErrorAlert(message:String){
+  func showError(message:String){
     let alert = UIAlertController(title: "Что-то пошло не так", message: message, preferredStyle: .alert)
     let action = UIAlertAction(title: "ok", style: .default)
     alert.addAction(action)
@@ -95,7 +81,7 @@ extension ImagesListViewController {
       print("Invalid URL string: \(urlString)")
       return
     }
-    cell.dateLabel.text = dateFormatter.string(from: photos[indexPath.row].createdAt ?? Date())
+    cell.dateLabel.text = presenter?.formattedDate(from: photos[indexPath.row].createdAt)
     let isLiked = photos[indexPath.row].isLiked
     let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
     cell.likeButton.setImage(likeImage, for: .normal)
@@ -129,7 +115,7 @@ extension ImagesListViewController: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     if indexPath.row == photos.count - 1 {
-      ImagesListService.shared.fetchPhotosNextPage {[weak self] result in
+      presenter?.loadNextPageIfNeeded() {[weak self] result in
         guard let self = self else { return }
         switch result {
         case .success:
@@ -149,23 +135,18 @@ extension ImagesListViewController: ImagesListCellDelegate {
       return
     }
     let photo = photos[indexPath.row]
-    ImagesListService.shared.changeLike(photoId: photo.id, isLike:photo.isLiked) {[weak self] result in
-      guard let self = self else {
-        UIBlockingProgressHUD.dismiss()
-        return
-      }
+    presenter?.didTapLike(photo){ result in
+    UIBlockingProgressHUD.dismiss()
       switch result{
-      case .success():
+      case .success:
         self.photos = ImagesListService.shared.photos
         let updatedPhoto = self.photos[indexPath.row]
         let isLiked = updatedPhoto.isLiked
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
-        UIBlockingProgressHUD.dismiss()
       case . failure(let error):
-        let message = "Can't change button state \(error)"
-        self.presentErrorAlert(message: message)
-        UIBlockingProgressHUD.dismiss()
+        let message = "Can't change button state"
+        self.showError(message: message)
       }
     }
   }
