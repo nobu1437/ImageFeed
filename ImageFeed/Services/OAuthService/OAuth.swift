@@ -58,7 +58,7 @@ final class OAuth2Service {
       return .failure(.invalidURL)
     }
     var request = URLRequest(url: url)
-    request.httpMethod = httpConstants.post.rawValue
+    request.httpMethod = HttpConstants.post.rawValue
     return .success(request)
   }
 }
