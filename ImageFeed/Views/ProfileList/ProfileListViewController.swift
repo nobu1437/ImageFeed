@@ -35,13 +35,6 @@ final class ProfileViewController: UIViewController {
   @objc
   private func didTapButton() {
     addConfirmationAlert()
-    //    nameLabel?.removeFromSuperview()
-    //    nickLabel?.removeFromSuperview()
-    //    descLabel?.removeFromSuperview()
-    //    nameLabel = nil
-    //    nickLabel = nil
-    //    descLabel = nil
-    //    imageView?.image = UIImage(systemName: "person.crop.circle.fill")
   }
   func addConfirmationAlert(){
     let alert = UIAlertController(title: "Вы уверены?", message: "Придется заново заходить!", preferredStyle: .alert)
