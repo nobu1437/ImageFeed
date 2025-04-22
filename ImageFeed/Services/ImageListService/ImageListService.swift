@@ -1,12 +1,15 @@
 import Foundation
 
 final class ImagesListService {
-  private (set) var photos: [Photo] = []
+  private(set) var photos: [Photo] = []
   static let shared = ImagesListService()
   static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
   private var task: URLSessionTask?
   private let token = OAuth2TokenStorage.shared.token ?? ""
   private var lastLoadedPage: Int?
+  private static let dateFormatter: ISO8601DateFormatter = {
+     ISO8601DateFormatter()
+  }()
   private init(){}
   
   func fetchPhotosNextPage(_ completion: @escaping (Result<[Photo],Error>) -> Void) {
@@ -20,7 +23,7 @@ final class ImagesListService {
     }
     print(url)
     var request = URLRequest(url: url)
-    request.httpMethod = httpConstants.get.rawValue
+    request.httpMethod = HttpConstants.get.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
       guard let self = self else { return }
@@ -31,7 +34,8 @@ final class ImagesListService {
           let photo = Photo(
             id: item.id,
             size: CGSize(width: item.width, height: item.height),
-            createdAt:ISO8601DateFormatter().date(from: item.createdAt),
+            createdAt:
+              ImagesListService.dateFormatter.date(from: item.createdAt),
             welcomeDescription: item.description,
             thumbImageURL: item.urls.thumb,
             largeImageURL: item.urls.full,
@@ -59,12 +63,12 @@ final class ImagesListService {
     task?.cancel()
     guard let url = URL(string:"https://api.unsplash.com/photos/\(photoId)/like" ) else {return}
     var request = URLRequest(url: url)
-    request.httpMethod = isLike ? "POST" : "DELETE"
+    request.httpMethod = isLike ? HttpConstants.post.rawValue : HttpConstants.delete.rawValue
     request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     let task = URLSession.shared.objectTask(for: request) {[weak self] (result:Result<LikePhotoResult,Error>) in
       guard let self = self else { return }
       switch result {
-      case .success(_):
+      case .success:
         if let index = self.photos.firstIndex(where: {$0.id == photoId}){
           let photo = self.photos[index]
           let newPhoto = Photo(id: photo.id,
@@ -87,6 +91,6 @@ final class ImagesListService {
     task.resume()
   }
   func photosDelete(){
-    self.photos.removeAll()
+    photos.removeAll()
   }
 }
