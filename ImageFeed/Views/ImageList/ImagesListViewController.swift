@@ -27,7 +27,8 @@ final class ImagesListViewController: UIViewController {
       }}
     
     tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-    ImagesListService.shared.fetchPhotosNextPage { result in
+    ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
+      guard let self = self else { return }
       switch result {
       case .success(let photos):
         self.photos = photos
@@ -128,7 +129,8 @@ extension ImagesListViewController: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     if indexPath.row == photos.count - 1 {
-      ImagesListService.shared.fetchPhotosNextPage { result in
+      ImagesListService.shared.fetchPhotosNextPage {[weak self] result in
+        guard let self = self else { return }
         switch result {
         case .success:
           self.updateTableViewAnimated()
@@ -148,7 +150,10 @@ extension ImagesListViewController: ImagesListCellDelegate {
     }
     let photo = photos[indexPath.row]
     ImagesListService.shared.changeLike(photoId: photo.id, isLike:photo.isLiked) {[weak self] result in
-      guard let self = self else { return }
+      guard let self = self else {
+        UIBlockingProgressHUD.dismiss()
+        return
+      }
       switch result{
       case .success():
         self.photos = ImagesListService.shared.photos

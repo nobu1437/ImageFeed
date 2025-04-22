@@ -4,8 +4,8 @@ final class SingleImageViewController: UIViewController {
   
   var index:Int?{
     didSet{
-      guard isViewLoaded, let index else { return }
-      guard let url = URL(string:ImagesListService.shared.photos[index].largeImageURL) else {return}
+      guard isViewLoaded, let index,
+      let url = URL(string:ImagesListService.shared.photos[index].largeImageURL) else {return}
       showKfImage(fullImageURL:url)
     }
   }
