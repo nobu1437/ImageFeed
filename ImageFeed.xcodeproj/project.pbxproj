@@ -41,7 +41,7 @@
 		E5DF16712DB1937C00C42F45 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Assets/Info.plist,
 			);
 			target = E52A32F82D4504B5002E1597 /* ImageFeed */;
 		};
@@ -100,11 +100,11 @@
 		E52A32F02D4504B5002E1597 = {
 			isa = PBXGroup;
 			children = (
+				E5DF165A2DB1937C00C42F45 /* ImageFeed */,
 				E52A33122D4504B7002E1597 /* ImageFeedTests */,
 				E52A331C2D4504B7002E1597 /* ImageFeedUITests */,
 				E5DF15822DB1868900C42F45 /* Frameworks */,
 				E52A32FA2D4504B5002E1597 /* Products */,
-				E5DF165A2DB1937C00C42F45 /* ImageFeed */,
 			);
 			sourceTree = "<group>";
 		};
@@ -320,7 +320,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = R7G88X7PGL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ImageFeed/Info.plist;
+				INFOPLIST_FILE = ImageFeed/Assets/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -348,7 +348,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = R7G88X7PGL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ImageFeed/Info.plist;
+				INFOPLIST_FILE = ImageFeed/Assets/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

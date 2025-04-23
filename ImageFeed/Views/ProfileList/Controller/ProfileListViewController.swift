@@ -1,7 +1,9 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileListControllerProtocol{
+  var presenter: ProfileListPresenterProtocol?
+  
   private var nameLabel: UILabel?
   private var nickLabel: UILabel?
   private var descLabel: UILabel?
@@ -11,41 +13,36 @@ final class ProfileViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     print("init")
     view.backgroundColor = UIColor(named: "YP Black")
-    profileImageServiceObserver = NotificationCenter.default    // 2
-      .addObserver(
-        forName: ProfileImageService.didChangeNotification, // 3
-        object: nil,                                        // 4
-        queue: .main                                        // 5
-      ) { [weak self] _ in
-        guard let self = self,
-              let imageLink = ProfileImageService.shared.avatarURL else { return }
-        print(imageLink)
-        self.imageLink = imageLink
-        self.updateAvatar(imageLink:imageLink)                                 // 6
-      }
-    guard let profile = ProfileService.shared.profile else { return }
-    self.uiSetup(profile: profile)
-    if let imageLink = ProfileImageService.shared.avatarURL {
-      updateAvatar(imageLink: imageLink)
-    }
+    presenter?.viewDidLoad()
   }
   
   @objc
   private func didTapButton() {
-    addConfirmationAlert()
+    showLogoutConfirmation()
   }
-  func addConfirmationAlert(){
-    let alert = UIAlertController(title: "Вы уверены?", message: "Придется заново заходить!", preferredStyle: .alert)
-    let actionYes = UIAlertAction(title: "Да", style: .destructive){_ in
-      ProfileLogoutService.shared.logout()
-    }
-    let actionNo = UIAlertAction(title: "Нет", style: .default)
-    alert.addAction(actionYes)
-    alert.addAction(actionNo)
-    self.present(alert, animated: true)
+  
+  func displayProfile(_ profile: Profile) {
+      uiSetup(profile: profile)
   }
+
+  func updateAvatar(with url: String) {
+      imageView?.kf.setImage(with: URL(string: url))
+  }
+
+  func showLogoutConfirmation() {
+      let alert = UIAlertController(title: "Вы уверены?", message: "Придется заново заходить!", preferredStyle: .alert)
+      let yes = UIAlertAction(title: "Да", style: .destructive) { _ in
+          ProfileLogoutService.shared.logout()
+      }
+      let no = UIAlertAction(title: "Нет", style: .cancel)
+      alert.addAction(yes)
+      alert.addAction(no)
+      present(alert, animated: true)
+  }
+  
   func uiSetup(profile:Profile){
     imageViewInit()
     nameLabelInit(name:profile.name)
@@ -53,14 +50,6 @@ final class ProfileViewController: UIViewController {
     descLabelInit(bio:profile.bio)
     buttonInit()
     addSubviews()
-  }
-  
-  private func updateAvatar(imageLink: String) {
-    guard let imageView = imageView else {
-      print ("imageView is not initialized")
-      return }
-    imageView.kf.setImage(with: URL(string: imageLink))
-    print("done")
   }
   
   private func addSubviews() {
@@ -123,6 +112,7 @@ final class ProfileViewController: UIViewController {
       target: self,
       action: #selector(Self.didTapButton)
     )
+    button.accessibilityIdentifier = "logout button"
     button.tintColor = UIColor(named: "YP Red")
     button.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(button)
